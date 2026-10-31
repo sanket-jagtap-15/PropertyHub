@@ -1,13 +1,15 @@
-FROM gradle:8.10.2-jdk17 AS build
+
+FROM gradle:8.10.2-jdk21 AS build
 
 WORKDIR /app
 
 COPY . .
 
 RUN chmod +x gradlew
-RUN ./gradlew clean bootJar --no-daemon --stacktrace
 
-FROM eclipse-temurin:17-jre
+RUN ./gradlew clean bootJar --no-daemon
+
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
