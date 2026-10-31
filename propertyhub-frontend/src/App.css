@@ -1,0 +1,29 @@
+body {
+  background-color: #f5f6fa;
+  font-family: Arial, sans-serif;
+}
+
+.property-card {
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.property-card img {
+  height: 220px;
+  object-fit: cover;
+}
+
+.property-card .card-body {
+  padding: 20px;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+h1 {
+  font-weight: bold;
+  color: #212529;
+}

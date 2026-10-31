@@ -1,0 +1,20 @@
+# Node
+node_modules/
+dist/
+.env
+.env.local
+
+# Java / Gradle
+.gradle/
+build/
+*.class
+
+# IDE
+.settings/
+.project
+.classpath
+.vscode/
+
+# System
+.DS_Store
+Thumbs.db
