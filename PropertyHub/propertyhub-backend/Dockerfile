@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN gradle bootJar --no-daemon
+RUN chmod +x gradlew
+RUN ./gradlew clean bootJar --no-daemon --stacktrace
 
 FROM eclipse-temurin:17-jre
 
