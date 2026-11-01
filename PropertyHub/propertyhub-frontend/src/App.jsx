@@ -7,7 +7,7 @@ import AddProperty from "./components/AddProperty";
 
 import "./App.css";
 
-const API_URL = "http://localhost:8080/api/properties";
+const API_URL = "https://propertyhub-backend-ey9t.onrender.com/api/properties";
 
 export default function App() {
 
