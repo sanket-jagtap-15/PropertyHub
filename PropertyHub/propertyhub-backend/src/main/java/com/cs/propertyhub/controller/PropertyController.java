@@ -1,60 +1,51 @@
+
 package com.cs.propertyhub.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.cs.propertyhub.entity.*;
-import com.cs.propertyhub.service.*;
-
-import jakarta.validation.Valid;
+import com.cs.propertyhub.entity.Property;
+import com.cs.propertyhub.service.PropertyService;
 
 @RestController
 @RequestMapping("/api/properties")
 @CrossOrigin(origins = "http://localhost:5173")
 public class PropertyController {
 
-    private final PropertyService service;
+    private final PropertyService propertyService;
 
-    public PropertyController(PropertyService service) {
-        this.service = service;
+    public PropertyController(PropertyService propertyService) {
+        this.propertyService = propertyService;
     }
 
-    // GET all properties
     @GetMapping
     public List<Property> getAllProperties() {
-        return service.getAllProperties();
+        return propertyService.getAllProperties();
     }
 
-    // GET property by ID
     @GetMapping("/{id}")
     public Property getPropertyById(@PathVariable("id") Long id) {
-        return service.getPropertyById(id);
+        return propertyService.getPropertyById(id);
     }
 
-    // POST add property
     @PostMapping
-    public Property addProperty(
-            @Valid @RequestBody Property property) {
-        return service.addProperty(property);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Property addProperty(@RequestBody Property property) {
+        return propertyService.addProperty(property);
     }
 
-    // PUT update property
     @PutMapping("/{id}")
     public Property updateProperty(
             @PathVariable("id") Long id,
             @RequestBody Property property) {
-
-        return service.updateProperty(id, property);
+        return propertyService.updateProperty(id, property);
     }
 
-    // DELETE property
     @DeleteMapping("/{id}")
-    public String deleteProperty(
-            @PathVariable("id") Long id) {
-
-        service.deleteProperty(id);
-
-        return "Property deleted successfully!";
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProperty(@PathVariable("id") Long id) {
+        propertyService.deleteProperty(id);
     }
 }

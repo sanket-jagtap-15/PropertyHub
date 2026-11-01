@@ -1,29 +1,56 @@
-body {
-  background-color: #f5f6fa;
-  font-family: Arial, sans-serif;
+
+/* PrimeNest Realty Navbar */
+
+.prime-navbar {
+  background-color: #ffffff;
+  padding: 12px 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-.property-card {
-  height: 100%;
-  border: none;
-  border-radius: 12px;
-  overflow: hidden;
+.prime-brand {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1;
 }
 
-.property-card img {
-  height: 220px;
-  object-fit: cover;
+.brand-name {
+  font-family: Georgia, serif;
+  font-size: 30px;
+  color: #b28a32;
+  font-weight: 600;
 }
 
-.property-card .card-body {
-  padding: 20px;
+.brand-realty {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: #927027;
+  text-align: center;
+  margin-top: 5px;
 }
 
-.card {
-  border-radius: 12px;
+.prime-navbar .nav-link {
+  color: #333333;
+  font-weight: 500;
+  margin-left: 15px;
 }
 
-h1 {
-  font-weight: bold;
-  color: #212529;
+.prime-navbar .nav-link:hover {
+  color: #b28a32;
 }
+
+
+.prime-heading {
+  color: #a9822e;
+  font-family: Georgia, serif;
+  font-weight: 600;
+}
+
+.prime-tagline {
+  color: #806326;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+ 

@@ -1,8 +1,14 @@
+
 package com.cs.propertyhub.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import java.math.BigDecimal;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "properties")
@@ -16,26 +22,25 @@ public class Property {
     private String title;
 
     @NotBlank
-    private String description;
-
-    @NotBlank
     private String location;
 
-    @NotNull
-    @PositiveOrZero
-    @Column(precision = 14, scale = 2)
-    private BigDecimal price;
+    @Positive
+    private double price;
 
+    @Column(name = "property_type")
     @NotBlank
-    private String propertyType;
+    private String type;
 
-    @Min(0)
-    private Integer bedrooms;
+    private int bedrooms;
 
-    @Min(0)
-    private Integer bathrooms;
+    private int bathrooms;
 
-    private String imageUrl;
+    private String description;
+
+    private String email;
+
+    @Column(name = "image_url")
+    private String image;
 
     public Property() {
     }
@@ -56,14 +61,6 @@ public class Property {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -72,43 +69,59 @@ public class Property {
         this.location = location;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getPropertyType() {
-        return propertyType;
+    public String getType() {
+        return type;
     }
 
-    public void setPropertyType(String propertyType) {
-        this.propertyType = propertyType;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Integer getBedrooms() {
+    public int getBedrooms() {
         return bedrooms;
     }
 
-    public void setBedrooms(Integer bedrooms) {
+    public void setBedrooms(int bedrooms) {
         this.bedrooms = bedrooms;
     }
 
-    public Integer getBathrooms() {
+    public int getBathrooms() {
         return bathrooms;
     }
 
-    public void setBathrooms(Integer bathrooms) {
+    public void setBathrooms(int bathrooms) {
         this.bathrooms = bathrooms;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getDescription() {
+        return description;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
