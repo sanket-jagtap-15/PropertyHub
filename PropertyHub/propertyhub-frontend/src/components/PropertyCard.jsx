@@ -3,6 +3,7 @@ export default function PropertyCard({
   property,
   onDelete,
   onEdit,
+  onEnquire,
   isAdmin
 }) {
   const placeholderImage =
@@ -39,7 +40,7 @@ export default function PropertyCard({
         </p>
 
         <h5 className="text-success">
-          ₹ {Number(property.price).toLocaleString("en-IN")}
+          ₹ {Number(property.price || 0).toLocaleString("en-IN")}
         </h5>
 
         <p>{property.description}</p>
@@ -52,7 +53,7 @@ export default function PropertyCard({
           🚿 {property.bathrooms} Bathrooms
         </p>
 
-        {isAdmin && (
+        {isAdmin ? (
           <div>
             <button
               className="btn btn-primary me-2"
@@ -68,6 +69,13 @@ export default function PropertyCard({
               Delete
             </button>
           </div>
+        ) : (
+          <button
+            className="btn btn-success w-100 mt-2"
+            onClick={() => onEnquire && onEnquire(property)}
+          >
+            Enquire Now
+          </button>
         )}
       </div>
     </div>

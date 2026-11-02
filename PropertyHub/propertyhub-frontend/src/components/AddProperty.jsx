@@ -18,8 +18,22 @@ export default function AddProperty({
   onCancel
 }) {
   const [form, setForm] = useState(initialForm);
-  const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
+
+  // Resolve image URL or local filename
+  const getImageUrl = (image) => {
+    if (!image) return "";
+
+    if (
+      image.startsWith("http://") ||
+      image.startsWith("https://") ||
+      image.startsWith("/")
+    ) {
+      return image;
+    }
+
+    return `/images/${image}`;
+  };
 
   useEffect(() => {
     if (editingProperty) {
@@ -38,12 +52,10 @@ export default function AddProperty({
         image: existingImage
       });
 
-      setPreview(existingImage);
-      setImageFile(null);
+      setPreview(getImageUrl(existingImage));
     } else {
       setForm(initialForm);
       setPreview("");
-      setImageFile(null);
     }
   }, [editingProperty]);
 
@@ -56,35 +68,8 @@ export default function AddProperty({
     }));
 
     if (name === "image") {
-      setImageFile(null);
-      setPreview(value);
+      setPreview(getImageUrl(value.trim()));
     }
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Please select a valid image.");
-      e.target.value = "";
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Image size must be less than 5 MB.");
-      e.target.value = "";
-      return;
-    }
-
-    setImageFile(file);
-    setForm((previous) => ({
-      ...previous,
-      image: ""
-    }));
-
-    setPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = (e) => {
@@ -94,8 +79,7 @@ export default function AddProperty({
       ...form,
       price: Number(form.price),
       bedrooms: Number(form.bedrooms),
-      bathrooms: Number(form.bathrooms),
-      imageFile: imageFile
+      bathrooms: Number(form.bathrooms)
     });
   };
 
@@ -186,27 +170,17 @@ export default function AddProperty({
           </div>
 
           <div className="col-12 mb-3">
-            <label>Upload Property Image</label>
-            <input
-              type="file"
-              className="form-control"
-              accept="image/*"
-              onChange={handleImageUpload}
-            />
-            <small className="text-muted">
-              Select an image from your computer (maximum 5 MB).
-            </small>
-          </div>
-
-          <div className="col-12 mb-3">
-            <label>Or Paste Image URL</label>
+            <label>Property Image URL or Filename</label>
             <input
               className="form-control"
               name="image"
               value={form.image}
               onChange={handleChange}
-              placeholder="Paste direct image URL"
+              placeholder="Paste image URL or enter filename, e.g. house1.jpg"
             />
+            <small className="text-muted">
+              Enter a direct image URL or a filename from public/images/.
+            </small>
           </div>
 
           {preview && (

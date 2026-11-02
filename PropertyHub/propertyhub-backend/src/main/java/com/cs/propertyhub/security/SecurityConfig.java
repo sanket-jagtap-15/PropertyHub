@@ -25,8 +25,6 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-   
-
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration) throws Exception {
@@ -42,12 +40,31 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+
+                // Public admin login endpoint
                 .requestMatchers("/api/auth/**").permitAll()
+
+                // Allow CORS preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // Anyone can view properties
                 .requestMatchers(HttpMethod.GET, "/api/properties/**").permitAll()
+
+                // Only admin can manage properties
                 .requestMatchers(HttpMethod.POST, "/api/properties/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/properties/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/properties/**").hasRole("ADMIN")
+
+                // Anyone can submit a customer enquiry
+                .requestMatchers(HttpMethod.POST, "/api/enquiries").permitAll()
+
+                // Only admin can view customer enquiries
+                .requestMatchers(HttpMethod.GET, "/api/enquiries").hasRole("ADMIN")
+
+                // Only admin can delete customer enquiries
+                .requestMatchers(HttpMethod.DELETE, "/api/enquiries/**").hasRole("ADMIN")
+
+                // Reject all other requests
                 .anyRequest().denyAll()
             )
             .addFilterBefore(
