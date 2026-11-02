@@ -1,5 +1,7 @@
 
-/* PrimeNest Realty Navbar */
+/* =================================
+   PrimeNest Realty Navbar
+================================= */
 
 .prime-navbar {
   background-color: #ffffff;
@@ -10,8 +12,17 @@
 .prime-brand {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
   line-height: 1;
+}
+
+.prime-logo {
+  width: 65px;
+  height: 42px;
+  object-fit: contain;
+  margin-bottom: 5px;
 }
 
 .brand-name {
@@ -40,6 +51,10 @@
 }
 
 
+/* =================================
+   PrimeNest Realty Homepage
+================================= */
+
 .prime-heading {
   color: #a9822e;
   font-family: Georgia, serif;
@@ -53,4 +68,134 @@
   font-size: 18px;
   letter-spacing: 0.5px;
 }
- 
+
+
+/* =================================
+   Property Form
+================================= */
+
+#property-form {
+  scroll-margin-top: 100px;
+}
+
+
+/* =================================
+   PrimeNest Realty Contact Page
+================================= */
+
+.contact-page {
+  background: #faf9f6;
+  min-height: 85vh;
+  padding-top: 40px;
+}
+
+.contact-heading h1 {
+  color: #a77b25;
+  font-weight: 700;
+}
+
+.contact-heading > p:first-of-type {
+  color: #9b762d;
+  letter-spacing: 3px;
+}
+
+.contact-line {
+  width: 90px;
+  height: 3px;
+  background: #b68a32;
+  margin: 15px auto 20px;
+}
+
+.contact-info-card,
+.contact-form-card {
+  background: #fff;
+  border: 1px solid #eee5d2;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.contact-info-card h3,
+.contact-form-card h3 {
+  color: #a77b25;
+  margin-bottom: 15px;
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 28px;
+}
+
+.contact-info-item > span {
+  background: #b68a32;
+  color: white;
+  width: 42px;
+  height: 42px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.contact-info-item h6 {
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.contact-info-item p {
+  margin-bottom: 0;
+  color: #666;
+}
+
+.contact-form-card .form-control {
+  padding: 11px;
+  border-radius: 7px;
+}
+
+.contact-form-card .form-control:focus {
+  border-color: #b68a32;
+  box-shadow: 0 0 0 0.2rem rgba(182, 138, 50, 0.15);
+}
+
+.contact-submit-btn {
+  background: #a77b25;
+  color: white;
+  padding: 11px 25px;
+  border: none;
+}
+
+.contact-submit-btn:hover {
+  background: #89631c;
+  color: white;
+}
+
+
+/* =================================
+   Mobile Responsive Navbar
+================================= */
+
+@media (max-width: 991px) {
+  .prime-navbar .nav-link {
+    margin-left: 0;
+    padding: 10px 0;
+  }
+
+  .prime-brand {
+    align-items: flex-start;
+  }
+
+  .brand-realty {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+.prime-logo {
+  width: 365px;
+  height: 90px;
+  object-fit: contain;
+  display: block;
+}

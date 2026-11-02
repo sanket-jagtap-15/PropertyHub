@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 
 const initialForm = {
@@ -5,31 +6,85 @@ const initialForm = {
   description: "",
   location: "",
   price: "",
-  propertyType: "Apartment",
+  type: "Apartment",
   bedrooms: 1,
   bathrooms: 1,
-  imageUrl: ""
+  image: ""
 };
 
-export default function AddProperty({ onSave, editingProperty, onCancel }) {
-
+export default function AddProperty({
+  onSave,
+  editingProperty,
+  onCancel
+}) {
   const [form, setForm] = useState(initialForm);
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState("");
 
   useEffect(() => {
     if (editingProperty) {
-      setForm({ ...editingProperty });
+      const existingImage =
+        editingProperty.image ||
+        editingProperty.imageUrl ||
+        "";
+
+      setForm({
+        ...initialForm,
+        ...editingProperty,
+        type:
+          editingProperty.type ||
+          editingProperty.propertyType ||
+          "Apartment",
+        image: existingImage
+      });
+
+      setPreview(existingImage);
+      setImageFile(null);
     } else {
       setForm(initialForm);
+      setPreview("");
+      setImageFile(null);
     }
   }, [editingProperty]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setForm({
-      ...form,
+    setForm((previous) => ({
+      ...previous,
       [name]: value
-    });
+    }));
+
+    if (name === "image") {
+      setImageFile(null);
+      setPreview(value);
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image size must be less than 5 MB.");
+      e.target.value = "";
+      return;
+    }
+
+    setImageFile(file);
+    setForm((previous) => ({
+      ...previous,
+      image: ""
+    }));
+
+    setPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = (e) => {
@@ -39,21 +94,18 @@ export default function AddProperty({ onSave, editingProperty, onCancel }) {
       ...form,
       price: Number(form.price),
       bedrooms: Number(form.bedrooms),
-      bathrooms: Number(form.bathrooms)
+      bathrooms: Number(form.bathrooms),
+      imageFile: imageFile
     });
-
-    setForm(initialForm);
   };
 
   return (
     <div className="card p-4 shadow-sm mb-4">
-
       <h4>
         {editingProperty ? "Update Property" : "Add New Property"}
       </h4>
 
       <form onSubmit={handleSubmit}>
-
         <div className="row">
 
           <div className="col-md-6 mb-3">
@@ -82,7 +134,7 @@ export default function AddProperty({ onSave, editingProperty, onCancel }) {
             <label>Price (₹)</label>
             <input
               type="number"
-              min="0"
+              min="1"
               className="form-control"
               name="price"
               value={form.price}
@@ -95,8 +147,8 @@ export default function AddProperty({ onSave, editingProperty, onCancel }) {
             <label>Property Type</label>
             <select
               className="form-control"
-              name="propertyType"
-              value={form.propertyType}
+              name="type"
+              value={form.type}
               onChange={handleChange}
             >
               <option>Apartment</option>
@@ -134,15 +186,47 @@ export default function AddProperty({ onSave, editingProperty, onCancel }) {
           </div>
 
           <div className="col-12 mb-3">
-            <label>Image URL</label>
+            <label>Upload Property Image</label>
+            <input
+              type="file"
+              className="form-control"
+              accept="image/*"
+              onChange={handleImageUpload}
+            />
+            <small className="text-muted">
+              Select an image from your computer (maximum 5 MB).
+            </small>
+          </div>
+
+          <div className="col-12 mb-3">
+            <label>Or Paste Image URL</label>
             <input
               className="form-control"
-              name="imageUrl"
-              value={form.imageUrl}
+              name="image"
+              value={form.image}
               onChange={handleChange}
-              placeholder="Paste image URL"
+              placeholder="Paste direct image URL"
             />
           </div>
+
+          {preview && (
+            <div className="col-12 mb-3">
+              <label>Image Preview</label>
+              <div>
+                <img
+                  src={preview}
+                  alt="Property preview"
+                  onError={() => setPreview("")}
+                  style={{
+                    width: "250px",
+                    height: "160px",
+                    objectFit: "cover",
+                    borderRadius: "8px"
+                  }}
+                />
+              </div>
+            </div>
+          )}
 
           <div className="col-12 mb-3">
             <label>Description</label>
@@ -170,9 +254,7 @@ export default function AddProperty({ onSave, editingProperty, onCancel }) {
             Cancel
           </button>
         )}
-
       </form>
     </div>
   );
 }
-

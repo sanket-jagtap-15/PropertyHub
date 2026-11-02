@@ -1,22 +1,35 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 import Navbar from "./components/Navbar";
 import PropertyCard from "./components/PropertyCard";
 import AddProperty from "./components/AddProperty";
+import AdminLogin from "./components/AdminLogin";
+import AdminDashboard from "./components/AdminDashboard";
 
 import "./App.css";
 
-const API_URL = "https://propertyhub-backend-ey9t.onrender.com/api/properties";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://propertyhub-backend-ey9t.onrender.com";
+
+const API_URL = `${API_BASE_URL}/api/properties`;
 
 export default function App() {
   const [properties, setProperties] = useState([]);
   const [editingProperty, setEditingProperty] = useState(null);
+  const [admin, setAdmin] = useState(null);
+
+  const [currentView, setCurrentView] = useState("home");
+  const [showLogin, setShowLogin] = useState(false);
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Get all properties
+  const propertyFormRef = useRef(null);
+
   const fetchProperties = async () => {
     try {
       const response = await axios.get(API_URL);
@@ -34,83 +47,201 @@ export default function App() {
     fetchProperties();
   }, []);
 
-  // Add or update property
-  const saveProperty = async (property) => {
-    try {
-      if (editingProperty) {
-        await axios.put(`${API_URL}/${editingProperty.id}`, property);
-        setEditingProperty(null);
-      } else {
-        await axios.post(API_URL, property);
-      }
-
-      await fetchProperties();
-    } catch (err) {
-      console.error("Save error:", err);
-      alert("Unable to save property. Please check your details.");
+  useEffect(() => {
+    if (showPropertyForm) {
+      propertyFormRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
     }
+  }, [showPropertyForm, editingProperty]);
+
+  const adminConfig = () => ({
+    headers: {
+      Authorization: `Bearer ${admin.token}`
+    }
+  });
+
+  // Successful login opens Admin Dashboard automatically
+  const handleLogin = (loginData) => {
+    setAdmin(loginData);
+    setShowLogin(false);
+    setShowPropertyForm(false);
+    setEditingProperty(null);
+    setCurrentView("dashboard");
+
+    alert("Admin login successful!");
   };
 
-  // Delete property
-  const deleteProperty = async (id) => {
-    if (!window.confirm("Are you sure you want to delete?")) {
+  // Logout returns to public website
+  const handleLogout = () => {
+    setAdmin(null);
+    setEditingProperty(null);
+    setShowPropertyForm(false);
+    setShowLogin(false);
+    setCurrentView("home");
+
+    alert("Admin logged out.");
+  };
+
+  const saveProperty = async (property) => {
+    if (!admin?.token) {
+      alert("Please login as Admin first.");
       return;
     }
 
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      if (editingProperty) {
+        await axios.put(
+          `${API_URL}/${editingProperty.id}`,
+          property,
+          adminConfig()
+        );
+      } else {
+        await axios.post(API_URL, property, adminConfig());
+      }
+
+      setEditingProperty(null);
+      setShowPropertyForm(false);
+
       await fetchProperties();
+
+      alert("Property saved successfully!");
+    } catch (err) {
+      console.error("Save error:", err);
+      alert("Unable to save property. Please try again.");
+    }
+  };
+
+  const deleteProperty = async (id) => {
+    if (!admin?.token) {
+      alert("Please login as Admin first.");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to delete this property?")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API_URL}/${id}`, adminConfig());
+      await fetchProperties();
+
+      alert("Property deleted successfully!");
     } catch (err) {
       console.error("Delete error:", err);
       alert("Unable to delete property.");
     }
   };
 
+  const openAddProperty = () => {
+    setEditingProperty(null);
+    setShowPropertyForm(true);
+  };
+
+  const startEditing = (property) => {
+    setEditingProperty(property);
+    setShowPropertyForm(true);
+  };
+
+  const cancelPropertyForm = () => {
+    setEditingProperty(null);
+    setShowPropertyForm(false);
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar
+        isAdmin={Boolean(admin)}
+        onAdminClick={() => {
+          if (admin) {
+            setCurrentView("dashboard");
+          } else {
+            setShowLogin(true);
+            setCurrentView("home");
+          }
+        }}
+        onLogout={handleLogout}
+      />
 
-      <div className="container mt-4">
+      {currentView === "dashboard" && admin ? (
+        <div className="container mt-4">
 
-        {/* PrimeNest Realty Welcome Section */}
-        <div className="text-center mb-5">
-          <h1 className="prime-heading">
-            Welcome to PrimeNest Realty
-          </h1>
-          <p className="prime-tagline">
-            Where Your Future Finds a Home
-          </p>
-        </div>
-
-        <h3 className="mb-4">Available Properties</h3>
-
-        {loading && <p>Loading properties...</p>}
-
-        {error && <p className="text-danger">{error}</p>}
-
-        {!loading && !error && properties.length === 0 && (
-          <p>No properties available yet. Please check back soon!</p>
-        )}
-
-        <div className="row">
-          {properties.map((property) => (
-            <div className="col-md-4 mb-4" key={property.id}>
-              <PropertyCard
-                property={property}
-                onDelete={deleteProperty}
-                onEdit={setEditingProperty}
+          {showPropertyForm && (
+            <div ref={propertyFormRef} id="property-form">
+              <AddProperty
+                onSave={saveProperty}
+                editingProperty={editingProperty}
+                onCancel={cancelPropertyForm}
               />
             </div>
-          ))}
+          )}
+
+          <AdminDashboard
+            properties={properties}
+            username={admin.username}
+            onAddProperty={openAddProperty}
+            onEditProperty={startEditing}
+            onDeleteProperty={deleteProperty}
+            onBackToWebsite={() => {
+              setShowPropertyForm(false);
+              setEditingProperty(null);
+              setCurrentView("home");
+            }}
+          />
+
         </div>
+      ) : (
+        <div className="container mt-4">
 
-        <AddProperty
-          onSave={saveProperty}
-          editingProperty={editingProperty}
-          onCancel={() => setEditingProperty(null)}
-        />
+          <div className="text-center mb-5">
+            <h1 className="prime-heading">
+              Welcome to PrimeNest Realty
+            </h1>
 
-      </div>
+            <p className="prime-tagline">
+              Where Your Future Finds a Home
+            </p>
+          </div>
+
+          {showLogin && !admin && (
+            <div className="mb-4">
+              <AdminLogin
+                onLogin={handleLogin}
+                onCancel={() => setShowLogin(false)}
+              />
+            </div>
+          )}
+
+          <h3 className="mb-4" id="properties">
+            Available Properties
+          </h3>
+
+          {loading && <p>Loading properties...</p>}
+
+          {error && (
+            <p className="text-danger">{error}</p>
+          )}
+
+          {!loading && !error && properties.length === 0 && (
+            <p>No properties available yet. Please check back soon!</p>
+          )}
+
+          <div className="row">
+            {properties.map((property) => (
+              <div className="col-md-4 mb-4" key={property.id}>
+                <PropertyCard
+                  property={property}
+                  isAdmin={Boolean(admin)}
+                  onEdit={startEditing}
+                  onDelete={deleteProperty}
+                />
+              </div>
+            ))}
+          </div>
+
+        </div>
+      )}
     </>
   );
 }
