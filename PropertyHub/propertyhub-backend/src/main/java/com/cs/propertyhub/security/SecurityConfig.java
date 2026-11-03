@@ -80,10 +80,10 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
-            "http://localhost:5173",
-            "https://propertyhubsj.netlify.app"
-        ));
+       configuration.setAllowedOrigins(List.of(
+    "http://localhost:5173",
+    "https://primenestrealitys.netlify.app"
+));
 
         configuration.setAllowedMethods(
             List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
