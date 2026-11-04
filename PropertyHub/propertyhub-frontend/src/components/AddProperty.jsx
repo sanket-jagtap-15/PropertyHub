@@ -20,7 +20,6 @@ export default function AddProperty({
   const [form, setForm] = useState(initialForm);
   const [preview, setPreview] = useState("");
 
-  // Resolve image URL or local filename
   const getImageUrl = (image) => {
     if (!image) return "";
 
@@ -134,12 +133,15 @@ export default function AddProperty({
               name="type"
               value={form.type}
               onChange={handleChange}
+              required
             >
-              <option>Apartment</option>
-              <option>House</option>
-              <option>Villa</option>
-              <option>Plot</option>
-              <option>Commercial</option>
+              <option value="Apartment">Apartment</option>
+              <option value="House">House</option>
+              <option value="Villa">Villa</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Residential Plot">Residential Plot</option>
+              <option value="Industrial Plot">Industrial Plot</option>
+              <option value="Plot">Plot (Existing)</option>
             </select>
           </div>
 

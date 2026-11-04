@@ -199,3 +199,120 @@
   object-fit: contain;
   display: block;
 }
+
+
+
+/* Homepage property category selection */
+
+.category-section {
+  padding: 35px 0 45px;
+}
+
+.category-main-heading {
+  color: #a77b25;
+  font-family: Georgia, serif;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.category-subheading {
+  color: #777;
+  margin-bottom: 25px;
+}
+
+.category-card {
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  padding: 28px 20px;
+  background: #fff;
+  border: 1px solid #eee5d2;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  transform: translateY(-7px);
+  border-color: #b68a32;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.11);
+}
+
+.category-icon {
+  display: block;
+  font-size: 42px;
+  margin-bottom: 18px;
+}
+
+.category-card h4 {
+  color: #a77b25;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.category-card p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 45px;
+}
+
+.category-card-link {
+  display: inline-block;
+  color: #a77b25;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.selected-property-info {
+  padding: 13px 15px;
+  background: #faf6ec;
+  border: 1px solid #eee1c3;
+  border-radius: 8px;
+  color: #60491e;
+}
+
+@media (max-width: 767px) {
+  .category-section {
+    padding: 20px 0 30px;
+  }
+
+  .category-main-heading {
+    font-size: 24px;
+  }
+
+  .category-card {
+    min-height: 220px;
+  }
+}
+.category-selected-heading {
+  padding: 18px 20px;
+  background: #faf6ec;
+  border-left: 4px solid #b68a32;
+  border-radius: 8px;
+}
+
+.category-selected-heading h3 {
+  color: #a77b25;
+  margin-bottom: 8px;
+}
+
+.property-price {
+  color: #a77b25;
+  font-weight: 700;
+}
+
+.contact-form-card .card {
+  overflow: hidden;
+  border: 1px solid #eee5d2;
+  border-radius: 12px;
+}
+
+.contact-form-card .card-img-top {
+  width: 100%;
+}

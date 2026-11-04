@@ -27,7 +27,7 @@ export default function NavigationBar({
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="#properties">Properties</Nav.Link>
             <Nav.Link href="#about">About Us</Nav.Link>
-            <Nav.Link href="#contact">Contact</Nav.Link>
+            
 
             {isAdmin ? (
               <>

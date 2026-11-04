@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 import Navbar from "./components/Navbar";
-import PropertyCard from "./components/PropertyCard";
 import AddProperty from "./components/AddProperty";
 import AdminLogin from "./components/AdminLogin";
 import AdminDashboard from "./components/AdminDashboard";
@@ -18,6 +17,38 @@ const API_BASE_URL =
 const API_URL = `${API_BASE_URL}/api/properties`;
 const ENQUIRY_API_URL = `${API_BASE_URL}/api/enquiries`;
 
+// Homepage property categories
+const propertyCategories = [
+  {
+    id: "residential-built-up",
+    title: "Residential Built-up Properties",
+    description: "Flats, apartments, independent houses and bungalows.",
+    icon: "🏡",
+    types: ["Apartment", "House", "Villa"]
+  },
+  {
+    id: "commercial-built-up",
+    title: "Commercial Built-up Properties",
+    description: "Shops, offices, commercial buildings and showrooms.",
+    icon: "🏢",
+    types: ["Commercial"]
+  },
+  {
+    id: "industrial-plots",
+    title: "Industrial Plots",
+    description: "Industrial land, factory plots and warehouse plots.",
+    icon: "🏭",
+    types: ["Industrial Plot"]
+  },
+  {
+    id: "residential-plots",
+    title: "Residential Plots",
+    description: "Open land for residential construction.",
+    icon: "🌳",
+    types: ["Residential Plot", "Plot"]
+  }
+];
+
 export default function App() {
 
   const [properties, setProperties] = useState([]);
@@ -29,7 +60,9 @@ export default function App() {
   const [currentView, setCurrentView] = useState("home");
   const [showLogin, setShowLogin] = useState(false);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
+
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -125,6 +158,7 @@ export default function App() {
 
         setCurrentView("home");
         setSelectedProperty(null);
+        setSelectedCategory(null);
       }
     };
 
@@ -312,10 +346,23 @@ export default function App() {
     setShowPropertyForm(false);
   };
 
-  // Open Contact Page
+  // Open Contact Page For An Individual Property
   const openContact = (property = null) => {
 
     setSelectedProperty(property);
+    setSelectedCategory(null);
+    setCurrentView("contact");
+    setShowLogin(false);
+    setShowPropertyForm(false);
+
+    window.location.hash = "contact";
+  };
+
+  // Open Contact Page For A Selected Category
+  const openCategoryContact = (category) => {
+
+    setSelectedProperty(null);
+    setSelectedCategory(category);
     setCurrentView("contact");
     setShowLogin(false);
     setShowPropertyForm(false);
@@ -327,6 +374,7 @@ export default function App() {
   const backToHome = () => {
 
     setSelectedProperty(null);
+    setSelectedCategory(null);
     setCurrentView("home");
 
     if (window.location.hash === "#contact") {
@@ -338,6 +386,15 @@ export default function App() {
       );
     }
   };
+
+  // Get Properties Matching Selected Category
+  const matchingProperties = selectedCategory
+    ? properties.filter((property) =>
+        selectedCategory.types.includes(
+          property.type || property.propertyType
+        )
+      )
+    : [];
 
   return (
     <>
@@ -402,6 +459,8 @@ export default function App() {
 
         <Contact
           selectedProperty={selectedProperty}
+          category={selectedCategory}
+          matchingProperties={matchingProperties}
           onBackHome={backToHome}
         />
 
@@ -435,41 +494,51 @@ export default function App() {
             </div>
           )}
 
-          <h3 className="mb-4" id="properties">
-            Available Properties
-          </h3>
+          {/* PROPERTY CATEGORY SELECTION */}
+          <section className="category-section mb-5">
 
-          {loading && <p>Loading properties...</p>}
+            <h2 className="category-main-heading text-center">
+              What kind of property are you looking for?
+            </h2>
 
-          {error && (
-            <p className="text-danger">{error}</p>
-          )}
-
-          {!loading && !error && properties.length === 0 && (
-
-            <p>
-              No properties available yet. Please check back soon!
+            <p className="category-subheading text-center">
+              Choose a property category to explore available options.
             </p>
-          )}
 
-          <div className="row">
+            <div className="row g-4 mt-3">
 
-            {properties.map((property) => (
+              {propertyCategories.map((category) => (
 
-              <div className="col-md-4 mb-4" key={property.id}>
+                <div className="col-md-6 col-lg-3" key={category.id}>
 
-                <PropertyCard
-                  property={property}
-                  isAdmin={Boolean(admin)}
-                  onEdit={startEditing}
-                  onDelete={deleteProperty}
-                  onEnquire={() => openContact(property)}
-                />
+                  <button
+                    type="button"
+                    className="category-card"
+                    onClick={() => openCategoryContact(category)}
+                  >
 
-              </div>
-            ))}
+                    <span className="category-icon">
+                      {category.icon}
+                    </span>
 
-          </div>
+                    <h4>{category.title}</h4>
+
+                    <p>{category.description}</p>
+
+                    <span className="category-card-link">
+                      Explore Properties →
+                    </span>
+
+                  </button>
+
+                </div>
+              ))}
+
+            </div>
+
+          </section>
+
+          {/* No property listings are displayed on the homepage */}
 
         </div>
       )}
